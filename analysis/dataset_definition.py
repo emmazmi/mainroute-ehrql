@@ -1,4 +1,4 @@
-from ehrql import Dataset, minimum_of
+from ehrql import Dataset, years, minimum_of, maximum_of
 from ehrql.tables.core import patients, clinical_events
 from ehrql.tables.tpp import practice_registrations
 
@@ -8,11 +8,15 @@ def make_dataset_colorectal(index_date, end_date):
     
     dataset = Dataset()
 
-    dataset.reg_date = practice_registrations.where(practice_registrations.start_date.is_on_or_between(index_date, end_date)
+    reg_date = practice_registrations.where(practice_registrations.start_date.is_on_or_between(index_date, end_date)
                                                     ).sort_by(
                                                         practice_registrations.start_date
                                                     ).first_for_patient().start_date
     
+    age_elig_date = patients.date_of_birth + years(16)
+
+    dataset.entry_date = maximum_of(reg_date, age_elig_date, "2018-03-23")
+
     def has_symptom(codelist):
         return clinical_events.where(clinical_events.snomedct_code.is_in(codelist)
             ).where(
