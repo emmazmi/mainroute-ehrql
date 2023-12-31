@@ -20,7 +20,7 @@ was_alive = (
 )
 
 was_registered = practice_registrations.where(
-        practice_registrations.for_patient_on("2018-03-23")
+        (practice_registrations.start_date.is_on_or_before("2018-03-23") & (practice_registrations.end_date.is_after("2018-03-23") | practice_registrations.end_date.is_null()))
          | (practice_registrations.start_date.is_after("2018-03-23") & practice_registrations.start_date.is_on_or_before("2023-10-22"))
 ).exists_for_patient()
 
