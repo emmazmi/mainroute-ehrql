@@ -11,4 +11,4 @@ phc/fit-test/2697b2ce
 phc/symptom-lowergi-abdo-mass/154bce96
 phc/symptom-lowergi-abdo-pain/632ce82b
 phc/symptom-lowergi-anaemia/4a1d74f6
-opensafely/ethnicity/2020-04-27
+opensafely/ethnicity-snomed-0removed/2e641f61
