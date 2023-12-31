@@ -33,8 +33,7 @@ def make_dataset_colorectal(index_date, end_date):
     dataset.abdopain_symp = has_symptom(codelists.abdopain_codes)
     dataset.anaemia_symp = has_symptom(codelists.anaemia_codes)
 
-    death_date = ons_deaths.where(ons_deaths.date.is_on_or_between(index_date, end_date)
-                                ).last_for_patient()
+    death_date = ons_deaths.date
 
     dereg_date = practice_registrations.where(practice_registrations.end_date.is_on_or_between(index_date, end_date)
                                               ).sort_by(
