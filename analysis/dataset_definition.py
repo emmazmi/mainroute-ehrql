@@ -18,9 +18,9 @@ def make_dataset_colorectal(index_date, end_date):
     )
 
     was_registered = practice_registrations.where(
-        practice_registrations.for_patient_on(index_date).exists_for_patient()
+        practice_registrations.for_patient_on(index_date)
         | (practice_registrations.start_date.is_after(index_date) & practice_registrations.start_date.is_on_or_before(end_date))
-    )
+    ).exists_for_patient()
 
     prev_colorectal_ca = clinical_events.where(
             clinical_events.snomedct_code.is_in(codelists.colorectal_diagnosis_codes_snomed)
@@ -46,11 +46,10 @@ def make_dataset_colorectal(index_date, end_date):
     dataset.abdopain_symp = has_symptom(codelists.abdopain_codes)
     dataset.anaemia_symp = has_symptom(codelists.anaemia_codes)
 
-    death_date = patients.date_of_death.where(patients.date_of_death.is_on_or_between(index_date, end_date)).exists_for_patient()
-    dereg_date = practice_registrations.end_date.where(practice_registrations.end_date.is_on_or_between(index_date, end_date)).exists_for_patient()
+    death_date = patients.date_of_death.where(patients.date_of_death.is_on_or_between(index_date, end_date))
+    dereg_date = practice_registrations.end_date.where(practice_registrations.end_date.is_on_or_between(index_date, end_date))
     colorectal_ca_diag_date = clinical_events.date.where(clinical_events.snomedct_code.is_in(codelists.colorectal_diagnosis_codes_snomed)
-                                                         ).where(clinical_events.date.is_on_or_between(index_date, end_date)
-                                                            ).exists_for_patient()
+                                                         ).where(clinical_events.date.is_on_or_between(index_date, end_date))
     
     dataset.exit_date = minimum_of(death_date, dereg_date, colorectal_ca_diag_date)
 
