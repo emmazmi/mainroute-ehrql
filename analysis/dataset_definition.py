@@ -1,6 +1,6 @@
 from ehrql import Dataset, years, minimum_of, maximum_of
 from ehrql.tables.core import patients, clinical_events
-from ehrql.tables.tpp import practice_registrations
+from ehrql.tables.tpp import practice_registrations, ons_deaths
 
 import codelists
 
@@ -33,10 +33,8 @@ def make_dataset_colorectal(index_date, end_date):
     dataset.abdopain_symp = has_symptom(codelists.abdopain_codes)
     dataset.anaemia_symp = has_symptom(codelists.anaemia_codes)
 
-    death_date = patients.where(patients.date_of_death.is_on_or_between(index_date, end_date)
-                                ).sort_by(
-                                    patients.date_of_death
-                                ).first_for_patient().date_of_death
+    death_date = ons_deaths.where(ons_deaths.date.is_on_or_between(index_date, end_date)
+                                ).last_for_patient()
 
     dereg_date = practice_registrations.where(practice_registrations.end_date.is_on_or_between(index_date, end_date)
                                               ).sort_by(
