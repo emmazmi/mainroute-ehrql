@@ -13,3 +13,13 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/data/dataset_static.csv.gz  
+
+  measures_demo:
+    run: ehrql:v1 generate-measures analysis/measures_demo.py
+      --output output/measures/measures_demo.csv
+      --
+      --start-date "2018-03-23"
+      --intervals 67
+    outputs:
+      moderately_sensitive:
+        measure_csv: output/measures/measures_demo.csv

@@ -57,7 +57,7 @@ def make_dataset_lowerGI(index_date, end_date):
     dataset.prbleed_symp_50 = dataset.prbleed_date.is_not_null() & (patients.age_on(dataset.prbleed_date) >= 50) & ~dataset.prbleed_prev
     dataset.wl_symp_50 = dataset.wl_date.is_not_null() & (patients.age_on(dataset.wl_date) >= 50) & ~dataset.wl_prev
     dataset.abdopain_symp_50 = dataset.abdopain_date.is_not_null() & (patients.age_on(dataset.abdopain_date) >= 50) & ~dataset.abdopain_prev
-    dataset.anaemia_symp = dataset.anaemia_date.is_not_null() & (patients.age_on(dataset.anaemia_date) >= 60) & ~dataset.anaemia_prev
+    dataset.anaemia_symp_60 = dataset.anaemia_date.is_not_null() & (patients.age_on(dataset.anaemia_date) >= 60) & ~dataset.anaemia_prev
     dataset.wl_abdopain_symp_40 = dataset.wl_date.is_not_null() & dataset.abdopain_date.is_not_null() & ((patients.age_on(dataset.wl_date) >= 40) | (patients.age_on(dataset.abdopain_date) >= 40)) & ~dataset.wl_prev & ~dataset.abdopain_prev
     dataset.prbleed_abdopain_symp = dataset.prbleed_date.is_not_null() & dataset.abdopain_date.is_not_null() & (patients.age_on(dataset.prbleed_date) < 50) & ~dataset.prbleed_prev & ~dataset.abdopain_prev
     dataset.prbleed_wl_symp = dataset.prbleed_date.is_not_null() & dataset.wl_date.is_not_null() & (patients.age_on(dataset.prbleed_date) < 50) & ~dataset.prbleed_prev & ~dataset.wl_prev

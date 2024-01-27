@@ -22,7 +22,7 @@ dataset.define_population(
 dataset.period_entry = maximum_of(index_date, dataset.entry_date)
 dataset.period_exit = minimum_of(end_date, dataset.exit_date)
 
-dataset.follow_up_days = (dataset.period_exit - dataset.period_entry).days
+dataset.follow_up_years = (dataset.period_exit - dataset.period_entry).years
 
 age = patients.age_on(dataset.entry_date)
 dataset.age_group = case(
@@ -99,4 +99,4 @@ dataset.ethnicity6 = case(
     otherwise="Unknown"
 )
 
-dataset.region = practice_registrations.for_patient_on("2022-04-01").practice_nuts1_region_name
+dataset.region = practice_registrations.for_patient_on(dataset.entry_date).practice_nuts1_region_name
