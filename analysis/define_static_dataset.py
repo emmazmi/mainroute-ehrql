@@ -1,4 +1,4 @@
-from ehrql import case, when
+from ehrql import case, when, years, days, minimum_of, maximum_of
 from ehrql.tables.core import patients, clinical_events
 from ehrql.tables.tpp import ( 
     addresses,
@@ -18,6 +18,11 @@ elig_cohort = dataset.entry_date.is_on_or_before(end_date) & dataset.exit_date.i
 dataset.define_population(
     elig_cohort
 )
+
+dataset.period_entry = maximum_of(index_date, dataset.entry_date)
+dataset.period_exit = minimum_of(end_date, dataset.exit_date)
+
+dataset.follow_up_days = (dataset.period_exit - dataset.period_entry).days
 
 age = patients.age_on(dataset.entry_date)
 dataset.age_group = case(

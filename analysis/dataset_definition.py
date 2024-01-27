@@ -69,14 +69,10 @@ def make_dataset_lowerGI(index_date, end_date):
 
     age_110_date = patients.date_of_birth + years(110)
 
-    dereg_date = practice_registrations.where(practice_registrations.end_date.is_on_or_between(index_date, end_date)
-                                              ).sort_by(
-                                                  practice_registrations.end_date
+    dereg_date = practice_registrations.sort_by(practice_registrations.end_date
                                               ).first_for_patient().end_date
 
     colorectal_ca_diag_date = clinical_events.where(clinical_events.snomedct_code.is_in(codelists.colorectal_diagnosis_codes_snomed)
-                                                        ).where(
-                                                            clinical_events.date.is_on_or_between(index_date, end_date)
                                                         ).sort_by(
                                                             clinical_events.date
                                                         ).first_for_patient().date
