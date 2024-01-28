@@ -17,10 +17,28 @@ def make_dataset_lowerGI(index_date, end_date):
 
     dataset.entry_date = maximum_of(reg_date, age_16_date, "2018-03-23")
 
+    death_date = ons_deaths.date
+
+    age_110_date = patients.date_of_birth + years(110)
+
+    dereg_date = practice_registrations.sort_by(practice_registrations.end_date
+                                              ).first_for_patient().end_date
+
+    colorectal_ca_diag_date = clinical_events.where(clinical_events.snomedct_code.is_in(codelists.colorectal_diagnosis_codes_snomed)
+                                                        ).sort_by(
+                                                            clinical_events.date
+                                                        ).first_for_patient().date
+    
+    dataset.exit_date = minimum_of(death_date, age_110_date, dereg_date, colorectal_ca_diag_date)
+
+    dataset.death_date = death_date
+
     def first_event(codelist):
         return clinical_events.where(clinical_events.snomedct_code.is_in(codelist)
             ).where(
                 clinical_events.date.is_on_or_between(index_date, end_date)
+            ).where(
+                clinical_events.date.is_on_or_between(dataset.entry_date, dataset.exit_date)
             ).sort_by(
                 clinical_events.date
             ).first_for_patient()
@@ -39,7 +57,7 @@ def make_dataset_lowerGI(index_date, end_date):
     dataset.abdopain_date = first_event(codelists.abdopain_codes).date
     dataset.anaemia_date = first_event(codelists.anaemia_codes).date
 
-    dataset.fit_all_date = first_event(codelists.fit_codes).date
+    dataset.fit_test_any_date = first_event(codelists.fit_codes).date
 
     def has_event(codelist):
         return first_event(codelist).exists_for_patient()
@@ -56,7 +74,7 @@ def make_dataset_lowerGI(index_date, end_date):
     dataset.prbleed_wl_symp = has_event(codelists.prbleeding_codes) & has_event(codelists.wl_codes) & (patients.age_on(dataset.prbleed_date) < 50) & ~prev_event(codelists.prbleeding_codes, dataset.prbleed_date) & ~prev_event(codelists.wl_codes, dataset.wl_date)
     dataset.lowerGI_any_symp = (dataset.ida_symp | dataset.cibh_symp | dataset.abdomass_symp | dataset.prbleed_symp_50 | dataset.wl_symp_50 | dataset.abdopain_symp_50 | dataset.anaemia_symp_60 | dataset.wl_abdopain_symp_40 | dataset.prbleed_abdopain_symp | dataset.prbleed_wl_symp)
 
-    dataset.fit_test_all = has_event(codelists.fit_codes) & ~prev_event(codelists.fit_codes, dataset.fit_all_date)
+    dataset.fit_test_any = has_event(codelists.fit_codes) & ~prev_event(codelists.fit_codes, dataset.fit_test_any_date)
 
     def fit_6_weeks(symp_date):
         return clinical_events.where(clinical_events.snomedct_code.is_in(codelists.fit_codes)
@@ -97,22 +115,6 @@ def make_dataset_lowerGI(index_date, end_date):
     dataset.ca_6_prbleed_abdopain = dataset.prbleed_abdopain_symp & colorectal_ca_symp_6_months(dataset.prbleed_date).exists_for_patient()
     dataset.ca_6_prbleed_wl = dataset.prbleed_wl_symp & colorectal_ca_symp_6_months(dataset.prbleed_date).exists_for_patient()
     dataset.ca_6_all_lowerGI = (dataset.ca_6_ida | dataset.ca_6_cibh | dataset.ca_6_abdomass | dataset.ca_6_prbleed | dataset.ca_6_wl | dataset.ca_6_abdopain | dataset.ca_6_anaemia | dataset.ca_6_wl_abdopain | dataset.ca_6_prbleed_abdopain | dataset.ca_6_prbleed_wl)
-
-    death_date = ons_deaths.date
-
-    age_110_date = patients.date_of_birth + years(110)
-
-    dereg_date = practice_registrations.sort_by(practice_registrations.end_date
-                                              ).first_for_patient().end_date
-
-    colorectal_ca_diag_date = clinical_events.where(clinical_events.snomedct_code.is_in(codelists.colorectal_diagnosis_codes_snomed)
-                                                        ).sort_by(
-                                                            clinical_events.date
-                                                        ).first_for_patient().date
-    
-    dataset.exit_date = minimum_of(death_date, age_110_date, dereg_date, colorectal_ca_diag_date)
-
-    dataset.death_date = death_date
 
     return dataset
 
