@@ -57,17 +57,12 @@ age_group = case(
 sex = patients.sex
 
 imd = addresses.for_patient_on(dataset.entry_date).imd_rounded
-imd10 = case(
-        when((imd >= 0) & (imd < int(32844 * 1 / 10))).then("1 (most deprived)"),
-        when(imd < int(32844 * 2 / 10)).then("2"),
-        when(imd < int(32844 * 3 / 10)).then("3"),
-        when(imd < int(32844 * 4 / 10)).then("4"),
-        when(imd < int(32844 * 5 / 10)).then("5"),
-        when(imd < int(32844 * 6 / 10)).then("6"),
-        when(imd < int(32844 * 7 / 10)).then("7"),
-        when(imd < int(32844 * 8 / 10)).then("8"),
-        when(imd < int(32844 * 9 / 10)).then("9"),
-        when(imd >= int(32844 * 9 / 10)).then("10 (least deprived)"),
+imd5 = case(
+        when((imd >=0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
+        when(imd < int(32844 * 2 / 5)).then("2"),
+        when(imd < int(32844 * 3 / 5)).then("3"),
+        when(imd < int(32844 * 4 / 5)).then("4"),
+        when(imd < int(32844 * 5 / 5)).then("5 (least deprived)"),
         otherwise="unknown"
 )
 
@@ -100,56 +95,56 @@ measures.define_defaults(intervals=months(intervals).starting_on(start_date))
 
 measures.define_measure(
     name="fit_test_rate", 
-    numerator=dataset.fit_test & dataset.elig_cohort,
+    numerator=dataset.fit_test_all & dataset.elig_cohort,
     denominator=elig_follow_up_years,
-    group_by={"imd": imd10}
+    group_by={"imd": imd5}
     )
 
 measures.define_measure(
     name="ida_symp_rate", 
     numerator=dataset.ida_symp & dataset.elig_cohort,
     denominator=elig_follow_up_years,
-    group_by={"imd": imd10}
+    group_by={"imd": imd5}
     )
 
 measures.define_measure(
     name="cibh_symp_rate", 
     numerator=dataset.cibh_symp & dataset.elig_cohort,
     denominator=elig_follow_up_years,
-    group_by={"imd": imd10}
+    group_by={"imd": imd5}
     )
 
 measures.define_measure(
     name="abdomass_symp_rate", 
     numerator=dataset.abdomass_symp & dataset.elig_cohort,
     denominator=elig_follow_up_years,
-    group_by={"imd": imd10}
+    group_by={"imd": imd5}
     )
 
 measures.define_measure(
     name="prbleed_symp_50_rate", 
     numerator=dataset.prbleed_symp_50 & dataset.elig_cohort,
     denominator=elig_follow_up_years,
-    group_by={"imd": imd10}
+    group_by={"imd": imd5}
     )
 
 measures.define_measure(
     name="wl_symp_50_rate", 
     numerator=dataset.wl_symp_50 & dataset.elig_cohort,
     denominator=elig_follow_up_years,
-    group_by={"imd": imd10}
+    group_by={"imd": imd5}
     )
 
 measures.define_measure(
     name="abdopain_symp_50_rate", 
     numerator=dataset.abdopain_symp_50 & dataset.elig_cohort,
     denominator=elig_follow_up_years,
-    group_by={"imd": imd10}
+    group_by={"imd": imd5}
     )
 
 measures.define_measure(
     name="anaemia_symp_60_rate", 
     numerator=dataset.anaemia_symp_60 & dataset.elig_cohort,
     denominator=elig_follow_up_years,
-    group_by={"imd": imd10}
+    group_by={"imd": imd5}
     )

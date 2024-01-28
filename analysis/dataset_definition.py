@@ -54,6 +54,7 @@ def make_dataset_lowerGI(index_date, end_date):
     dataset.wl_abdopain_symp_40 = has_event(codelists.wl_codes) & has_event(codelists.abdopain_codes) & ((patients.age_on(dataset.wl_date) >= 40) | (patients.age_on(dataset.abdopain_date) >= 40)) & ~prev_event(codelists.wl_codes, dataset.wl_date) & ~prev_event(codelists.abdopain_codes, dataset.abdopain_date)
     dataset.prbleed_abdopain_symp = has_event(codelists.prbleeding_codes) & has_event(codelists.abdopain_codes) & (patients.age_on(dataset.prbleed_date) < 50) & ~prev_event(codelists.prbleeding_codes, dataset.prbleed_date) & ~prev_event(codelists.abdopain_codes, dataset.abdopain_date)
     dataset.prbleed_wl_symp = has_event(codelists.prbleeding_codes) & has_event(codelists.wl_codes) & (patients.age_on(dataset.prbleed_date) < 50) & ~prev_event(codelists.prbleeding_codes, dataset.prbleed_date) & ~prev_event(codelists.wl_codes, dataset.wl_date)
+    dataset.lowerGI_any_symp = (dataset.ida_symp | dataset.cibh_symp | dataset.abdomass_symp | dataset.prbleed_symp_50 | dataset.wl_symp_50 | dataset.abdopain_symp_50 | dataset.anaemia_symp_60 | dataset.wl_abdopain_symp_40 | dataset.prbleed_abdopain_symp | dataset.prbleed_wl_symp)
 
     dataset.fit_test_all = has_event(codelists.fit_codes) & ~prev_event(codelists.fit_codes, dataset.fit_all_date)
 
