@@ -26,7 +26,7 @@ index_date = INTERVAL.start_date
 
 dataset = make_dataset_lowerGI(index_date=index_date, end_date=INTERVAL.end_date)
 
-elig_cohort = dataset.entry_date.is_on_or_before(INTERVAL.end_date) & dataset.exit_date.is_after(index_date)
+dataset.elig_cohort = dataset.entry_date.is_on_or_before(INTERVAL.end_date) & dataset.exit_date.is_after(index_date)
 
 period_entry = maximum_of(index_date, dataset.entry_date)
 period_exit = minimum_of(INTERVAL.end_date, dataset.exit_date)
@@ -34,7 +34,7 @@ period_exit = minimum_of(INTERVAL.end_date, dataset.exit_date)
 follow_up_years = (period_exit - period_entry).years
 
 elig_follow_up_years = case(
-        when(elig_cohort).then(follow_up_years)
+        when(dataset.elig_cohort).then(follow_up_years)
 )
 
 ##########
@@ -100,56 +100,56 @@ measures.define_defaults(intervals=months(intervals).starting_on(start_date))
 
 measures.define_measure(
     name="fit_test_rate", 
-    numerator=dataset.fit_test,
+    numerator=dataset.fit_test & dataset.elig_cohort,
     denominator=elig_follow_up_years,
     group_by={"imd": imd10}
     )
 
 measures.define_measure(
     name="ida_symp_rate", 
-    numerator=dataset.ida_symp,
+    numerator=dataset.ida_symp & dataset.elig_cohort,
     denominator=elig_follow_up_years,
     group_by={"imd": imd10}
     )
 
 measures.define_measure(
     name="cibh_symp_rate", 
-    numerator=dataset.cibh_symp,
+    numerator=dataset.cibh_symp & dataset.elig_cohort,
     denominator=elig_follow_up_years,
     group_by={"imd": imd10}
     )
 
 measures.define_measure(
     name="abdomass_symp_rate", 
-    numerator=dataset.abdomass_symp,
+    numerator=dataset.abdomass_symp & dataset.elig_cohort,
     denominator=elig_follow_up_years,
     group_by={"imd": imd10}
     )
 
 measures.define_measure(
     name="prbleed_symp_50_rate", 
-    numerator=dataset.prbleed_symp_50,
+    numerator=dataset.prbleed_symp_50 & dataset.elig_cohort,
     denominator=elig_follow_up_years,
     group_by={"imd": imd10}
     )
 
 measures.define_measure(
     name="wl_symp_50_rate", 
-    numerator=dataset.wl_symp_50,
+    numerator=dataset.wl_symp_50 & dataset.elig_cohort,
     denominator=elig_follow_up_years,
     group_by={"imd": imd10}
     )
 
 measures.define_measure(
     name="abdopain_symp_50_rate", 
-    numerator=dataset.abdopain_symp_50,
+    numerator=dataset.abdopain_symp_50 & dataset.elig_cohort,
     denominator=elig_follow_up_years,
     group_by={"imd": imd10}
     )
 
 measures.define_measure(
     name="anaemia_symp_60_rate", 
-    numerator=dataset.anaemia_symp_60,
+    numerator=dataset.anaemia_symp_60 & dataset.elig_cohort,
     denominator=elig_follow_up_years,
     group_by={"imd": imd10}
     )
